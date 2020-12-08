@@ -74,18 +74,36 @@ final public class UICircularTimerRing: UICircularRing {
         // begin animation to start time, this should be done instantly thus 0 duration
         startAnimation(duration: 0) {
             // begin animation to end time, this is done with difference in endTime and startTime
-            self.startAnimation(duration: endTime - startTime) {
+            var duration: TimeInterval = 0
+            if startTime < endTime {
+                duration = endTime - startTime
+            } else  {
+                duration = startTime - endTime
+            }
+            self.startAnimation(duration: duration) {
                 self.timerHandler?(.finished)
             }
 
             // this will cause the animation to the end time value
+            var maxValue: CGFloat = 0
+            if startTime < endTime {
+                maxValue = endTime.float
+            } else {
+                maxValue = startTime.float
+            }
             self.ringLayer.value = endTime.float
-            self.ringLayer.maxValue = endTime.float
+            self.ringLayer.maxValue = maxValue
         }
 
         // this causes the animation to the start time
+        var maxValue: CGFloat = 0
+        if startTime < endTime {
+            maxValue = endTime.float
+        } else {
+            maxValue = startTime.float
+        }
         ringLayer.value = startTime.float
-        ringLayer.maxValue = endTime.float
+        ringLayer.maxValue = maxValue
 
         // store time and handler
         time = endTime
